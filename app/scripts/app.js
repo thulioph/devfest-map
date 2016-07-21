@@ -21,7 +21,7 @@
     ])
     .config(function ($routeProvider) {
       $routeProvider
-        .when('/', {
+        .when('/main', {
           templateUrl: 'views/main.html',
           controller: 'MainCtrl',
           controllerAs: 'main'
@@ -31,7 +31,7 @@
           controller: 'AboutCtrl',
           controllerAs: 'about'
         })
-        .when('/map', {
+        .when('/', {
           templateUrl: 'views/map.html',
           controller: 'MapCtrl',
           controllerAs: 'map'
