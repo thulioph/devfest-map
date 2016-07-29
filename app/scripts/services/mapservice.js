@@ -18,7 +18,7 @@
     function MapService($resource, ApiConfig) {
       var url, data;
 
-      url = ApiConfig.API_URL;
+      url = ApiConfig.API_LOCAL;
       data = $resource(url + '/:user', {user: '@user'});
 
       return data;

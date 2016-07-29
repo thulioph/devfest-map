@@ -9,15 +9,17 @@
 <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="left">
   <md-toolbar class="md-theme-light">
     <h1 class="md-toolbar-tools">Speaker detail</h1>
+    <md-button ng-click="map.close()" class="md-primary">close</md-button>
   </md-toolbar>
 
   <md-content layout-padding>
-    <md-button ng-click="map.close()" class="md-primary">close</md-button>
 
     <p>name: {{map.marker_info.data.name}}</p>
-    <p>email: {{map.marker_info.data.email}}</p>
-    <p>website: {{map.marker_info.data.website}}</p>
-    <p>city: {{map.marker_info.data.city}}</p>
+    <p>company: {{map.marker_info.data.company}}</p>
+    <p>bio: {{map.marker_info.data.bio}}</p>
+    <p>twitter: {{map.marker_info.data.social.twitter}}</p>
+    <p>facebook: {{map.marker_info.data.social.facebook}}</p>
+    <p>linkedin: {{map.marker_info.data.social.linkedin}}</p>
   </md-content>
 
 </md-sidenav>

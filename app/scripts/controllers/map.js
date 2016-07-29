@@ -20,7 +20,7 @@
 
       /* jshint validthis: true */
       vm = this;
-      vm.getMarkers = getMarkers();
+      vm.getMarkers = getMarkers;
       vm.addMarkers = addMarkers;
       vm.buildAll = buildAll;
       vm._clickedMarker = _clickedMarker;
@@ -36,9 +36,10 @@
 
         var fakePosition, map, mapContainer, mapOptions, posObj, bounds;
 
+        // salvador
         posObj = {
-          'lat': -8.19595,
-          'lng': -34.9362597
+          'lat': -12.9080817,
+          'lng': -39.2652199
         };
 
         fakePosition = new google.maps.LatLng(posObj.lat, posObj.lng);
@@ -66,7 +67,8 @@
 
         vm.bounds = new google.maps.LatLngBounds();
 
-        $scope.$emit('map_is_ok', vm.map);
+        // $scope.$emit('map_is_ok', vm.map);
+        vm.getMarkers();
       }
 
       function getMarkers() {
@@ -81,14 +83,17 @@
           angular.forEach(data, function(i) {
 
             vm.markers_geo.push({
-              geo: i.address.geo,
+              geo: i.location.geo,
               id: i.id,
               name: i.name,
+              icon: {
+                url: i.photo
+              },
               data: {
                 'name': i.name,
-                'city': i.address.city,
-                'email': i.email,
-                'website': i.website
+                'company': i.company,
+                'bio': i.bio,
+                'social': i.social
               }
             });
 
@@ -100,6 +105,7 @@
 
       function addMarkers() {
         console.info('Add markers into map...');
+
         var marker, markerConfig;
 
         angular.forEach(vm.markers_geo, function(i) {
@@ -109,7 +115,10 @@
             clickable: true,
             title: i.name,
             zIndex: 12,
-            icon: 'https://unsplash.it/15/15?image=' + i.id,
+            // icon: {
+            //   url: '../images/thumbs/' + i.photo + '.png',
+            //   size: new google.maps.Size(75, 75)
+            // },
             data: i.data
           };
 
@@ -161,7 +170,7 @@
       // Listeners
       // ====
 
-      $scope.$on('map_is_ok', vm.getMarkers);
+      // $scope.$on('map_is_ok', vm.getMarkers);
       $scope.$on('markers_is_ok', vm.addMarkers);
       $scope.$on('map_markers_ok', vm.buildAll);
     }
