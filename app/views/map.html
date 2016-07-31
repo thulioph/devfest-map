@@ -2,24 +2,33 @@
   <div layout="column" layout-fill layout-align="top center">
     <aside class="map-container" id="map-container"></aside>
   </div>
-
-  <div flex></div>
 </md-content>
 
 <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="left">
-  <md-toolbar class="md-theme-light">
-    <h1 class="md-toolbar-tools">Speaker detail</h1>
+  <md-card>
+    <img ng-src="{{map.marker_info.data.url}}" class="md-card-image" alt="{{map.marker_info.data.name}}">
     <md-button ng-click="map.close()" class="md-primary">close</md-button>
-  </md-toolbar>
 
-  <md-content layout-padding>
+    <md-card-title>
+      <md-card-title-text>
+        <span class="md-headline">{{map.marker_info.data.name}}</span>
+      </md-card-title-text>
+    </md-card-title>
 
-    <p>name: {{map.marker_info.data.name}}</p>
-    <p>company: {{map.marker_info.data.company}}</p>
-    <p>bio: {{map.marker_info.data.bio}}</p>
-    <p>twitter: {{map.marker_info.data.social.twitter}}</p>
-    <p>facebook: {{map.marker_info.data.social.facebook}}</p>
-    <p>linkedin: {{map.marker_info.data.social.linkedin}}</p>
-  </md-content>
+    <md-card-content>
+      <p>
+        {{map.marker_info.data.bio}}
+      </p>
 
+      <p>
+        {{map.marker_info.data.company}}
+      </p>
+    </md-card-content>
+
+    <md-card-actions layout="row" layout-align="end center">
+      <md-button target="_blank" ng-href="{{map.marker_info.data.social.twitter}}">Twitter</md-button>
+      <md-button target="_blank" ng-href="{{map.marker_info.data.social.facebook}}">Facebook</md-button>
+      <md-button target="_blank" ng-href="{{map.marker_info.data.social.linkedin}}">Linkedin</md-button>
+    </md-card-actions>
+  </md-card>
 </md-sidenav>

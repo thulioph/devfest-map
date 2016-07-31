@@ -103,7 +103,8 @@
                 'name': i.name,
                 'company': i.company,
                 'bio': i.bio,
-                'social': i.social
+                'social': i.social,
+                'url': '../images/thumbs/' + i.id + '.png'
               }
             });
 
