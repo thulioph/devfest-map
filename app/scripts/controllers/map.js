@@ -26,6 +26,8 @@
       vm._clickedMarker = _clickedMarker;
       vm.toggleRight = toggleRight;
       vm.close = close;
+      vm.displaRoute = displaRoute;
+      vm.getMarkers = getMarkers();
 
       buildMap();
 
@@ -34,7 +36,15 @@
       function buildMap() {
         console.info('Building map...');
 
-        var fakePosition, map, mapContainer, mapOptions, posObj, bounds;
+        var fakePosition, map, mapContainer, mapOptions, posObj, bounds, directionsService, directionsDisplay;
+
+        vm.directionsService = new google.maps.DirectionsService;
+        vm.directionsDisplay = new google.maps.DirectionsRenderer;
+
+        // Removes all default markers of render directions
+        vm.directionsDisplay = new google.maps.DirectionsRenderer({
+          suppressMarkers: true
+        });
 
         // salvador
         posObj = {
@@ -48,7 +58,7 @@
 
         mapOptions = {
           center: fakePosition,
-          zoom: 6,
+          zoom: 3,
           mapTypeControl: false,
           panControl: false,
           streetViewControl: false,
@@ -64,11 +74,11 @@
         };
 
         vm.map = new google.maps.Map(mapContainer, mapOptions);
+        vm.directionsDisplay.setMap(vm.map);
 
         vm.bounds = new google.maps.LatLngBounds();
 
-        // $scope.$emit('map_is_ok', vm.map);
-        vm.getMarkers();
+        $scope.$emit('map_is_ok', vm.map);
       }
 
       function getMarkers() {
@@ -114,11 +124,13 @@
             map: vm.map,
             clickable: true,
             title: i.name,
-            zIndex: 12,
-            // icon: {
-            //   url: '../images/thumbs/' + i.photo + '.png',
-            //   size: new google.maps.Size(75, 75)
-            // },
+            zIndex: i.id,
+            icon: {
+              url: '../images/thumbs/' + i.icon.url + '.png',
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(10, 15),
+              scaledSize: new google.maps.Size(40, 40)
+            },
             data: i.data
           };
 
@@ -131,6 +143,8 @@
           // add listener for each marker
           google.maps.event.addListener(marker, 'click', vm._clickedMarker(marker, i));
         });
+
+        calculateAndDisplayRoute(vm.directionsService, vm.directionsDisplay);
 
         $scope.$emit('map_markers_ok');
       }
@@ -148,9 +162,53 @@
         }
       }
 
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        var waypts, markers, first, last, obj;
+
+        waypts = [];
+        markers = vm.markers_geo;
+
+        first = markers.shift();
+        last = markers.pop();
+
+        obj = {
+          origin: first.data.bio,
+          destination: last.data.bio
+        }
+
+        for (var i = 0; i < markers.length; i++) {
+          waypts.push({
+            location: new google.maps.LatLng(markers[i].geo.lat, markers[i].geo.lng),
+            stopover: true
+          });
+        }
+
+        obj.waypts = waypts;
+
+        vm.displaRoute(directionsService, obj);
+      }
+
+      function displaRoute(directionsService, obj) {
+        directionsService.route({
+          origin: obj.origin,
+          destination: obj.destination,
+          waypoints: obj.waypts,
+          optimizeWaypoints: true,
+          travelMode: google.maps.TravelMode.DRIVING
+        }, function(response, status) {
+          if (status === google.maps.DirectionsStatus.OK) {
+            vm.directionsDisplay.setDirections(response);
+          } else {
+            console.warn('Directions request failed due to ' + status);
+          }
+        });
+      }
+
       function buildAll() {
         console.warn('=== MAP AND MARKERS ARE OK ===');
       }
+
+      // Sidebar
 
       function toggleRight() {
           $mdSidenav('right').toggle()
@@ -170,7 +228,7 @@
       // Listeners
       // ====
 
-      // $scope.$on('map_is_ok', vm.getMarkers);
+      $scope.$on('map_is_ok', vm.getMarkers);
       $scope.$on('markers_is_ok', vm.addMarkers);
       $scope.$on('map_markers_ok', vm.buildAll);
     }
