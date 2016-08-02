@@ -168,5 +168,62 @@
       "facebook": "http://facebook.com",
       "linkedin": "https://linkedin.com"
     }
+  },
+
+  {
+    "id": 10,
+    "photo": 5,
+    "name": "Cluster 01",
+    "company": "Bret",
+    "bio": "São Paulo - SP",
+    "location": {
+      "geo": {
+        "lat": "-23.6815314",
+        "lng": "-46.8754983"
+      }
+    },
+    "social": {
+      "twitter": "http://twitter.com",
+      "facebook": "http://facebook.com",
+      "linkedin": "https://linkedin.com"
+    }
+  },
+
+  {
+    "id": 11,
+    "photo": 3,
+    "name": "Cluster 02",
+    "company": "Bret",
+    "bio": "São Paulo - SP",
+    "location": {
+      "geo": {
+        "lat": "-23.8815314",
+        "lng": "-46.1754983"
+      }
+    },
+    "social": {
+      "twitter": "http://twitter.com",
+      "facebook": "http://facebook.com",
+      "linkedin": "https://linkedin.com"
+    }
+  },
+
+  {
+    "id": 12,
+    "photo": 7,
+    "name": "Cluster 03",
+    "company": "Bret",
+    "bio": "São Paulo - SP",
+    "location": {
+      "geo": {
+        "lat": "-23.4815314",
+        "lng": "-46.6754983"
+      }
+    },
+    "social": {
+      "twitter": "http://twitter.com",
+      "facebook": "http://facebook.com",
+      "linkedin": "https://linkedin.com"
+    }
   }
 ]

@@ -28,6 +28,7 @@
       vm.close = close;
       vm.displaRoute = displaRoute;
       vm.getMarkers = getMarkers();
+      vm.setClusters = setClusters;
 
       buildMap();
 
@@ -117,7 +118,9 @@
       function addMarkers() {
         console.info('Add markers into map...');
 
-        var marker, markerConfig;
+        var marker, markerConfig, markerArray;
+
+        markerArray = [];
 
         angular.forEach(vm.markers_geo, function(i) {
           markerConfig = {
@@ -136,6 +139,7 @@
           };
 
           marker = new google.maps.Marker(markerConfig);
+          markerArray.push(marker);
 
           // adjusts zoom to show all markers
           vm.bounds.extend(new google.maps.LatLng(i.geo.lat, i.geo.lng));
@@ -144,6 +148,9 @@
           // add listener for each marker
           google.maps.event.addListener(marker, 'click', vm._clickedMarker(marker, i));
         });
+
+        // Marker Clusters
+        vm.setClusters(markerArray);
 
         calculateAndDisplayRoute(vm.directionsService, vm.directionsDisplay);
 
@@ -167,7 +174,8 @@
         var waypts, markers, first, last, obj;
 
         waypts = [];
-        markers = vm.markers_geo;
+        // markers = vm.markers_geo;
+        markers = vm.markers_geo.slice(3);
 
         first = markers.shift();
         last = markers.pop();
@@ -203,6 +211,46 @@
             console.warn('Directions request failed due to ' + status);
           }
         });
+      }
+
+      function setClusters(markersArray) {
+        var mc, mcOptions, latLng, marker;
+
+        // markersArray = [];
+
+        // for (var i = 0; i < 3; i++) {
+          // markersArray.push(new google.maps.Marker({
+          //   'position': new google.maps.LatLng(, ),
+          //   'icon': {
+          //     url: '../../images/thumbs/5.png',
+          //     scaledSize: new google.maps.Size(40, 40)
+          //   }
+          // }));
+
+          // markersArray.push(new google.maps.Marker({
+          //   'position': new google.maps.LatLng(, ),
+          //   'icon': {
+          //     url: '../../images/thumbs/3.png',
+          //     scaledSize: new google.maps.Size(40, 40)
+          //   }
+          // }));
+
+          // markersArray.push(new google.maps.Marker({
+          //   'position': new google.maps.LatLng(-23.4815314, -46.6754983),
+          //   'icon': {
+          //     url: '../../images/thumbs/7.png',
+          //     scaledSize: new google.maps.Size(40, 40)
+          //   }
+          // }));
+        // }
+
+        mcOptions = {
+          gridSize: 20,
+          maxZoom: 7,
+          imagePath: '../../images/markers/m'
+        };
+
+        mc = new MarkerClusterer(vm.map, markersArray, mcOptions);
       }
 
       function buildAll() {
