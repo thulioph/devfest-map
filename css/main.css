@@ -19,7 +19,8 @@ body {
 }
 
 .map-panel {
-  width: 35%;
+  min-width: 15%;
+  max-width: 35%;
   position: absolute;
   padding: 0 15px;
   left: -45%;
