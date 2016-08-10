@@ -53,7 +53,7 @@
 
     fakePosition = new google.maps.LatLng(posObj.lat, posObj.lng);
 
-    mapContainer = document.getElementById('map-container');
+    mapContainer = document.getElementById('map-area');
 
     mapOptions = {
       center: fakePosition,
@@ -94,7 +94,7 @@
             'company': i.company,
             'bio': i.bio,
             'social': i.social,
-            'url': '../images/thumbs/' + i.id + '.png'
+            'url': 'images/thumbs/' + i.id + '.png'
           }
         });
       });
@@ -132,9 +132,7 @@
         map.fitBounds(bounds);
 
         // add listener for each marker
-        google.maps.event.addListener(marker, 'click', function(marker, i) {
-          console.info(marker, i);
-        });
+        google.maps.event.addListener(marker, 'click', _clickedMarker);
       });
 
       // Marker Clusters
@@ -216,6 +214,42 @@
       }).catch(function(error) {
         console.warn('error 1', error);
       });
+  }
+
+  function _clickedMarker(marker, i) {
+    var panel, img, figcaption, h5, span, p, facebook, twitter, linkedin, closedButton;
+
+    panel = document.getElementById('map-panel');
+
+    if (!panel.classList.contains('open')) {
+      panel.classList.add('open');
+    }
+
+    img = document.getElementById('panel-img');
+    figcaption = document.getElementById('panel-title');
+    h5 = document.getElementById('panel-location');
+    span = document.getElementById('panel-job');
+    p = document.getElementById('panel-bio');
+
+    facebook = document.querySelector('.social.facebook');
+    twitter = document.querySelector('.social.twitter');
+    linkedin = document.querySelector('.social.linkedin');
+
+    img.setAttribute('src', this.data.url);
+    img.setAttribute('alt', 'Foto do perfil de ' + this.data.name);
+    figcaption.innerHTML = this.data.name;
+    h5.innerHTML = this.data.bio;
+    span.innerHTML = '@' + this.data.company;
+
+    facebook.setAttribute('href', this.data.social.facebook);
+    twitter.setAttribute('href', this.data.social.twitter);
+    linkedin.setAttribute('href', this.data.social.linkedin);
+
+    // Close button
+    closedButton = document.getElementById('close');
+    closedButton.addEventListener('click', function(e) {
+      panel.classList.remove('open');
+    });
   }
 
   // Init function
