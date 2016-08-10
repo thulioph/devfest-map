@@ -1,6 +1,5 @@
-/node_modules
-/dist
-/.tmp
+README.md
 /.sass-cache
+/.tmp
+/app
 /bower_components
-.DS_Store
