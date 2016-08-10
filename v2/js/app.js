@@ -1,6 +1,8 @@
 (function() {
   'use strict';
 
+  var fakePosition, map, mapContainer, mapOptions, posObj, bounds, directionsService, directionsDisplay, markers_geo, marker, markerConfig, markerArray;
+
   // Get data from database
   function Request(url) {
     // Return a new promise.
@@ -35,10 +37,6 @@
 
   // Build map
   function BuildMap() {
-    console.info('Building map...');
-
-    var fakePosition, map, mapContainer, mapOptions, posObj, bounds, directionsService, directionsDisplay;
-
     directionsService = new google.maps.DirectionsService;
     directionsDisplay = new google.maps.DirectionsRenderer;
 
@@ -83,8 +81,6 @@
   // Get markers
   function BuildMarkers(markersArray) {
     return new Promise(function(resolve, reject) {
-      var markers_geo;
-
       markers_geo = [];
 
       markersArray.forEach(function(i) {
@@ -109,13 +105,7 @@
 
   // Add markers
   function AddMarkers(markersArray) {
-    console.log(this.map);
-
     return new Promise(function(resolve, reject) {
-      // console.info('Add markers into map...');
-
-      var marker, markerConfig, markerArray;
-
       markerArray = [];
 
       markersArray.forEach(function(i) {
@@ -126,7 +116,7 @@
           title: i.name,
           zIndex: i.id,
           icon: {
-            url: '../images/thumbs/' + i.icon.url + '.png',
+            url: 'images/thumbs/' + i.icon.url + '.png',
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(10, 15),
             scaledSize: new google.maps.Size(40, 40)
@@ -148,10 +138,84 @@
       });
 
       // Marker Clusters
-      // setClusters(markerArray);
+      setClusters(markerArray);
 
-      // calculateAndDisplayRoute(directionsService, directionsDisplay);
+      calculateAndDisplayRoute(directionsService, directionsDisplay);
     });
+  }
+
+  // Clusteres
+  function setClusters(markersArray) {
+    var mc, mcOptions;
+
+    mcOptions = {
+      gridSize: 20,
+      maxZoom: 7,
+      imagePath: 'images/markers/m'
+    };
+
+    mc = new MarkerClusterer(map, markersArray, mcOptions);
+  }
+
+  // Display routes
+  function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+    var waypts, markers, first, last, obj;
+
+    waypts = [];
+    markers = markers_geo.slice(3);
+
+    first = markers.shift();
+    last = markers.pop();
+
+    obj = {
+      origin: first.data.bio,
+      destination: last.data.bio
+    };
+
+    for (var i = 0; i < markers.length; i++) {
+      waypts.push({
+        location: new google.maps.LatLng(markers[i].geo.lat, markers[i].geo.lng),
+        stopover: true
+      });
+    }
+
+    obj.waypts = waypts;
+
+    displaRoute(directionsService, obj);
+  }
+
+  function displaRoute(directionsService, obj) {
+    directionsService.route({
+      origin: obj.origin,
+      destination: obj.destination,
+      waypoints: obj.waypts,
+      optimizeWaypoints: true,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+      } else {
+        console.warn('Directions request failed due to ' + status);
+      }
+    });
+  }
+
+  // Helper functions
+  function _addMarkers(array) {
+    AddMarkers(array).then(function(response) {
+      // console.log('dale 2', response)
+    }).catch(function(error) {
+      console.warn('error 2', error)
+    });
+  }
+
+  function _buildMarkers(array) {
+    BuildMarkers(array).then(function(response) {
+        // console.info('dale 1', response);
+        _addMarkers(response);
+      }).catch(function(error) {
+        console.warn('error 1', error);
+      });
   }
 
   // Init function
@@ -164,20 +228,7 @@
 
     Request(url).then(function(response) {
       markers = JSON.parse(response);
-
-      BuildMarkers(markers).then(function(response) {
-        console.info('dale 1', response);
-
-        // AddMarkers(response).then(function(response) {
-        //   console.log('dale 2', response)
-        // }).catch(function(error) {
-        //   console.warn('error 2', error)
-        // });
-
-      }).catch(function(error) {
-        console.warn('error 1', error);
-      });
-
+      _buildMarkers(markers);
     }).catch(function(error) {
       console.warn('ERROR', error);
     });
