@@ -1,12 +1,13 @@
-# dev-fest-app
+# DevFest Nordeste 2016
 
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
-version 0.12.1.
+> made with 💙
 
-## Build & development
+### Demo
 
-Run `grunt` for building and `grunt serve` for preview.
+[Link](http://thulioph.github.io/devfest-map)
 
-## Testing
+### What i used?
 
-Running `grunt test` will run the unit tests with karma.
+- [Google Maps API V3](https://developers.google.com/maps/documentation/javascript)
+- [Directions Service](https://developers.google.com/maps/documentation/javascript/directions)
+- [MarkerClusterer](https://developers.google.com/maps/articles/toomanymarkers#markerclusterer)
